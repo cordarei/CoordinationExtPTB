@@ -1,3 +1,4 @@
+import glob
 import sys
 import os.path
 import StringIO
@@ -30,10 +31,14 @@ if os.path.isfile(sys.argv[1]) != True and os.path.isdir(sys.argv[1]) != True:
 
 INPUT_PATH = sys.argv[1]
 SINGLEFILE = True if os.path.isfile(INPUT_PATH) else False
+SECTION_DIRS = os.path.isdir(os.path.join(INPUT_PATH, '00'))
 
 # read input trees to objects
 if SINGLEFILE:
     inp_trees = list(read_trees_oneperline_file(open(INPUT_PATH)))
+elif SECTION_DIRS:
+    files = sorted(glob.glob(os.path.join(INPUT_PATH, '*', '*.mrg')))
+    inp_trees = list(t for f in files for t in read_trees_file(open(f)))
 else:
     inp_trees = []
     for file_name in sorted(os.listdir(INPUT_PATH)):
